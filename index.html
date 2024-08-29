@@ -66,10 +66,10 @@
                 return {
                     products: [],
                     ProductData: {
-                        name: '', // also we can use null 
-                        buying_price: 0,
-                        selling_price: 0,
-                        stock_quantity: 0
+                        name: null, // also we can use null 
+                        buying_price: null,
+                        selling_price: null,
+                        stock_quantity: null
                     }
                 }
             },
@@ -82,7 +82,7 @@
                         console.log(this.products)
                     }
                     catch (error) {
-                        console.log("error", error)
+                        console.log("error ", error)
                     }
                 },
 

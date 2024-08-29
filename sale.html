@@ -13,45 +13,43 @@
     <div id="myapp" class="container">
         <form @submit.prevent="add_sale">
             <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label">Product ID</label>
-                <input type="number" class="form-control" id="formGroupExampleInput" placeholder="product id...."
-                    v-model="SaleData.product_id">
+                <label for="formGroupExampleInput" class="form-label">Product</label>
+                <select class="form-control" id="formGroupExampleInput" v-model="SaleData.pid">
+                    <option v-for="product in products" :key="product.id" :value="product.id">{{ product.name }}
+                    </option>
+                </select>
             </div>
+
             <div class="mb-3">
                 <label for="formGroupExampleInput2" class="form-label">Quantity</label>
                 <input type="number" class="form-control" id="formGroupExampleInput2" placeholder="quantity...."
                     v-model="SaleData.quantity">
             </div>
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label for="formGroupExampleInput2" class="form-label">Sale Price</label>
                 <input type="number" class="form-control" id="formGroupExampleInput2" placeholder="sale price...."
                     v-model="SaleData.sale_price">
-            </div>
+            </div> -->
             <button type="submit" class="btn btn-primary">Add Sale</button>
         </form>
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Product ID</th>
+                    <th scope="col">Product id</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Created  At</th>
-
-                    
+                    <th scope="col">Created At</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="sale in sales" :key="sale.id">
-                    <td>{{sale.id}}</td>
-                    <td>{{sale.product_id}}</td>
-                    <td>{{sale.quantity}}</td>
-                    <td>{{sale.created_at}}</td>
-
+                    <td>{{ sale.product }}</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>{{ sale.created_at }}</td>
                 </tr>
             </tbody>
         </table>
-
     </div>
+
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -61,10 +59,10 @@
             data() {
                 return {
                     sales: [],
+                    products: [],
                     SaleData: {
-                        product_id: 0,
-                        quantity: 0,
-                        sale_price: 0
+                        pid: null,
+                        quantity: null
                     }
                 }
             },
@@ -74,10 +72,21 @@
                         const response = await axios.get('http://127.0.0.1:5000/sales')
                         console.log('Response data:', response.data);
                         this.sales = response.data.sales
-                        console.log(this.sales)
+                        console.log(this.sales,'sales')
                     }
                     catch (error) {
                         console.log("error", error)
+                    }
+                },
+                async fetch_products() {
+                    try {
+                        const response = await axios.get('http://127.0.0.1:5000/product')
+                        console.log('Response data:', response.data);
+                        this.products = response.data.products
+                        console.log(this.products)
+                    }
+                    catch (error) {
+                        console.log("error fetching product ", error)
                     }
                 },
                 add_sale() {
@@ -91,6 +100,7 @@
             },
             created() {
                 this.fetch_sales()
+                this.fetch_products()
             }
 
         }).mount('#myapp');
