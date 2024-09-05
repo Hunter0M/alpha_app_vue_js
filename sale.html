@@ -10,6 +10,30 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="sale.html">Sales Page</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="product.html">Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br>
+    <br>
+    <h3 style="margin-left: 3%;">Sales Page</h3> <br>
+
     <div id="myapp" class="container">
         <form @submit.prevent="add_sale">
             <div class="mb-3">
@@ -35,16 +59,18 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Product id</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Product ID</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Created At</th>
+                    <th scope="col">Time</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="sale in sales" :key="sale.id">
-                    <td>{{ sale.product }}</td>
+                <tr v-for="(sale , index) in sales" :key="sale.id">
+                    <td> {{ index + 1 }} </td>
+                    <td>{{ sale.product }} </td>
                     <td>{{ sale.quantity }}</td>
-                    <td>{{ sale.created_at }}</td>
+                    <td>{{sale.created_at}}</td>
                 </tr>
             </tbody>
         </table>
@@ -69,10 +95,16 @@
             methods: {
                 async fetch_sales() {
                     try {
-                        const response = await axios.get('http://127.0.0.1:5000/sales')
+                        const token = localStorage.getItem("access_token")
+                        console.log(token)
+                        const response = await axios.get('http://127.0.0.1:5000/sales', {
+                            headers: {
+                                Authorization: ` ${token}`
+                            }
+                        })
                         console.log('Response data:', response.data);
                         this.sales = response.data.sales
-                        console.log(this.sales,'sales')
+                        console.log(this.sales, 'sales')
                     }
                     catch (error) {
                         console.log("error", error)
@@ -80,7 +112,13 @@
                 },
                 async fetch_products() {
                     try {
-                        const response = await axios.get('http://127.0.0.1:5000/product')
+                        const token = localStorage.getItem("access_token")
+                        console.log(token)
+                        const response = await axios.get('http://127.0.0.1:5000/product',{
+                            headers: {
+                                Authorization: ` ${token}`
+                                }
+                        })
                         console.log('Response data:', response.data);
                         this.products = response.data.products
                         console.log(this.products)
@@ -91,7 +129,13 @@
                 },
                 add_sale() {
                     try {
-                        axios.post('http://127.0.0.1:5000/sales', this.SaleData)
+                        const token = localStorage.getItem("access_token")
+                        console.log(token)
+                        axios.post('http://127.0.0.1:5000/sales', this.SaleData,{
+                            headers: {
+                                Authorization: ` ${token}`
+                            }
+                        })
                     }
                     catch (error) {
                         console.log("error", error)
